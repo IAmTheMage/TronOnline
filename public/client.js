@@ -1,6 +1,6 @@
 const channel = geckos(
   {
-    port: 3001,
+    port: 3000,
     url: HOST != 'localhost' ? HOST : ''
   }
 );
@@ -191,10 +191,10 @@ const startCounterDraw = () => {
 
 let gameMainInterval = window.onload = () => {
   setInterval(() => {
-    if(realTimer == 30) {
+    if(realTimer == 20) {
       realTimer = 0;
     }
     if(gameHasToStart) realTimer++;
     draw();
-  }, 1000 / 30)
+  }, 1000 / 20)
 }

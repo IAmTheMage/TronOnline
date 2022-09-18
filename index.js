@@ -193,7 +193,7 @@ setInterval(() => {
       console.log("Tick for room: " + key)
     }
   })
-}, 1000 / 30);
+}, 1000 / 20);
 
 io.listen(3001, () => {
   console.log("Geckos is ready")
