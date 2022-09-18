@@ -1,5 +1,7 @@
 import express from 'express'
-import geckos from '@geckos.io/server'
+import geckos, {
+  iceServers
+} from '@geckos.io/server'
 import bodyParser from 'body-parser'
 import http from 'http'
 import cors from 'cors'
@@ -34,7 +36,9 @@ app.get('/rooms', (req, res) => {
   return res.send(allRooms);
 })
 
-const io = geckos();
+const io = geckos({
+  iceServers: iceServers
+});
 
 io.onConnection(channel => {
   console.log("Geckos connection from id: " + channel.id);
