@@ -45,7 +45,7 @@ io.onConnection(channel => {
   playersAmount++;
   playersConnected[channel.id] = channel;
   channel.on('move', data => {
-    console.log("Move")
+    console.log(data);
     allRooms[playersToRoom[channel.id]].players[channel.id].moveSetX = data.moveSetX;
     allRooms[playersToRoom[channel.id]].players[channel.id].moveSetY = data.moveSetY;
   })
@@ -103,9 +103,12 @@ app.post('/joinRoom', (req, res) => {
     playersConnected[id].join(creatorId);
     allRooms[name].players[id] = {
       color: 'green', direction: 'X-', positionX: 38, positionY: 20,
-      moveSetX: -1, moveSetY: 0
+      moveSetX: -1, moveSetY: 0, modified: [
+
+      ]
     }
     playersToRoom[id] = name;
+
   }
   else if(allRooms[name].playersJoin == 2) {
     return res.send().status(401);
@@ -144,6 +147,7 @@ const setPos = (room) => {
   let player1TestCaseY;
   let player1Color;
   let index = 0;
+  room.modified = [];
   keys.forEach(key => {
     player1TestCaseX = players[key].positionX;
     player1TestCaseY = players[key].positionY;
@@ -157,6 +161,12 @@ const setPos = (room) => {
         marked: true,
         markedColor: players[key].color
       }
+      const modified = {
+        positionX: players[key].positionX,
+        positionY: players[key].positionY,
+        markedColor: players[key].color
+      }
+      room.modified.push(modified);
     }
     else {
       losersCount++;
@@ -190,7 +200,7 @@ setInterval(() => {
     if(allRooms[key].active) {
       updatePos(allRooms[key])
       setPos(allRooms[key]);
-      playersConnected[allRooms[key].creatorId].room.emit('tick', {gameMap: allRooms[key].gameMap});
+      playersConnected[allRooms[key].creatorId].room.emit('tick', {modified: allRooms[key].modified});
       console.log("Tick for room: " + key)
     }
   })

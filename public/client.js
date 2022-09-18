@@ -31,7 +31,17 @@ let player2Info = {
 
 let basicMoveSet;
 
-let gameMap;
+let gameMap = [];
+
+for(let i = 0; i < 40; i++) {
+  gameMap.push([]);
+  for(let j = 0; j < 40; j++) {
+    gameMap[i][j] = {
+      marked: false,
+      markedColor: 'black'
+    }
+  }
+}
 
 let realTimer = 0;
 
@@ -84,7 +94,12 @@ channel.onConnect(error => {
   })
 
   channel.on('tick', data => {
-    gameMap = data.gameMap;
+    data.modified.forEach(dat => {
+      gameMap[dat.positionX][dat.positionY] = {
+        marked: true,
+        markedColor: dat.markedColor
+      }
+    })
   })
 
   id = channel.id;
