@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="./index.css" rel="stylesheet">
+  <title>Tron</title>
+</head>
+<body>
+  <h1>Jogue tron:</h1>
+  <button id="newRoom">Criar sala</button>
+  <button id="joinRoom">Entrar em sala</button>
+
+  <div id="canvasContainer" style="width: 400px; height: 400px; display: none;">
+    <canvas id="game" width="400" height="400"></canvas>
+  </div>
+
+  <div id="newRoomModal" style="display: none;">
+    <h1>Digite o nome da sala: </h1>
+    <input type="text" id="newRoomName" name="newRoomName">
+    <button id="sendCreateNewRoom">Criar</button>
+  </div>
+
+  <div id="joinRoomModal" style="display: none;">
+    <ul id="rooms">
+
+    </ul>
+  </div>
+  <script src="./geckos.js"></script>
+  <script src="./actions.js"></script>
+  <script src="./client.js"></script>
+</body>
+</html>
