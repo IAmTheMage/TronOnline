@@ -1,4 +1,9 @@
-const channel = geckos({port: 3000});
+const channel = geckos(
+  {
+    port: 3000,
+    url: HOST != 'localhost' ? HOST : ''
+  }
+);
 
 let id;
 let timer = 4;
