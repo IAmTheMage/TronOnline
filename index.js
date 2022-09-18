@@ -26,6 +26,8 @@ app.use(cors({origin: '*'}))
 app.use(express.static('public'))
 app.use(bodyParser.json())
 
+const server = http.createServer(app)
+
 app.use(bodyParser.urlencoded({extended: true}))
 
 app.get('/', (req, res) => {
@@ -195,11 +197,9 @@ setInterval(() => {
   })
 }, 1000 / 20);
 
-io.listen(3001, () => {
-  console.log("Geckos is ready")
-})
+io.addServer(server);
 
-app.listen(3000, () => {
+server.listen(3000, () => {
   console.log("App listening on port 3000");
 })
 
