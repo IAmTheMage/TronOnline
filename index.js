@@ -21,7 +21,6 @@ let playersToRoom = {
 
 const app = express();
 app.use(cors({origin: '*'}))
-const server = http.createServer(app)
 app.use(express.static('public'))
 app.use(bodyParser.json())
 
@@ -36,7 +35,6 @@ app.get('/rooms', (req, res) => {
 })
 
 const io = geckos();
-io.addServer(server)
 
 io.onConnection(channel => {
   console.log("Geckos connection from id: " + channel.id);
@@ -192,6 +190,10 @@ setInterval(() => {
     }
   })
 }, 1000 / 30);
+
+io.listen(3001, () => {
+  console.log("Geckos is ready")
+})
 
 server.listen(3000, () => {
   console.log("App listening on port 3000");
