@@ -112,6 +112,11 @@ channel.onConnect(error => {
       if(moveSetX != -1) moveSetX = 1;
       else moveSetX = -1;
     }
+    if('wasd'.includes(e.key) && timer <= 0) {
+      channel.emit('move', {
+        moveSetX, moveSetY
+      })
+    }
   })
 })
 
@@ -145,9 +150,6 @@ const draw = () => {
       }
       else {
         drawPlayers();
-        channel.emit('move', {
-          moveSetX, moveSetY
-        })
       }
     }
   }
