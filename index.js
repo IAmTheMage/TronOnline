@@ -195,7 +195,7 @@ io.listen(3001, () => {
   console.log("Geckos is ready")
 })
 
-server.listen(3000, () => {
+app.listen(3000, () => {
   console.log("App listening on port 3000");
 })
 
