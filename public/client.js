@@ -154,7 +154,7 @@ const draw = () => {
 }
 
 const drawTimer = () => {
-  if(realTimer == 30) {
+  if(realTimer == 20) {
     timer--;
   }
   startCounterDraw();
