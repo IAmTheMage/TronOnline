@@ -39,7 +39,8 @@ app.get('/rooms', (req, res) => {
 })
 
 const io = geckos({
-  iceServers: iceServers
+  iceServers: iceServers,
+  cors: {origin: '*'}
 });
 
 io.onConnection(channel => {
@@ -197,7 +198,9 @@ setInterval(() => {
   })
 }, 1000 / 20);
 
-io.addServer(server);
+io.listen(3001, () => {
+
+})
 
 server.listen(3000, () => {
   console.log("App listening on port 3000");

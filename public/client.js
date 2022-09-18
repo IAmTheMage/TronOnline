@@ -1,6 +1,6 @@
 const channel = geckos(
   {
-    port: 3000,
+    port: 3001,
     url: HOST != 'localhost' ? HOST : ''
   }
 );
