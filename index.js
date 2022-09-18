@@ -45,6 +45,7 @@ io.onConnection(channel => {
   playersAmount++;
   playersConnected[channel.id] = channel;
   channel.on('move', data => {
+    console.log("Move")
     allRooms[playersToRoom[channel.id]].players[channel.id].moveSetX = data.moveSetX;
     allRooms[playersToRoom[channel.id]].players[channel.id].moveSetY = data.moveSetY;
   })
