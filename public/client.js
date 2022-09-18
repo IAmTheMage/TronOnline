@@ -9,7 +9,7 @@ let timerResetTime = 1000;
 const PLAYERSIZEW = 10;
 const PLAYERSIZEH = 10;
 
-const HOST = ""
+
 
 let moveSetX = 1;
 let moveSetY = 0;
@@ -113,7 +113,7 @@ channel.onConnect(error => {
 
 document.addEventListener('openRoomsModal', () => {
   document.querySelectorAll('li').forEach(async (li) => {
-    const resp = await fetch(`http://localhost:3000/joinRoom`, {
+    const resp = await fetch(`http://${HOST}:3000/joinRoom`, {
       method: 'POST', body: JSON.stringify({
         id: id,
         name: li.id

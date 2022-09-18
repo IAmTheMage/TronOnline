@@ -2,6 +2,7 @@ import express from 'express'
 import geckos from '@geckos.io/server'
 import bodyParser from 'body-parser'
 import http from 'http'
+import cors from 'cors'
 
 const CANVASSIZE = 400;
 
@@ -19,6 +20,7 @@ let playersToRoom = {
 }
 
 const app = express();
+app.use(cors({origin: '*'}))
 const server = http.createServer(app)
 app.use(express.static('public'))
 app.use(bodyParser.json())

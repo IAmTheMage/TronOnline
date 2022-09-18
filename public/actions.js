@@ -1,5 +1,6 @@
 const canvas = document.getElementById("game");
 const ctx = canvas.getContext("2d");
+const HOST = "143.198.117.112";
 
 const newRoom = document.getElementById('newRoom')
 const joinRoom = document.getElementById('joinRoom');
@@ -29,7 +30,7 @@ const createNewRoom = async () => {
   console.log(global_id)
   const el = document.getElementById('newRoomName');
   const value = el.value;
-  const resp = await fetch('http://localhost:3000/createRoom', {
+  const resp = await fetch(`http://${HOST}:3000/createRoom`, {
     body: JSON.stringify({name: value, id: global_id}),
     method: 'POST', headers: {
       'Content-Type': 'application/json'
@@ -49,7 +50,7 @@ joinRoom.addEventListener('click', () => {
 })
 
 async function getRooms() {
-  const resp = await fetch("http://localhost:3000/rooms");
+  const resp = await fetch(`http://${HOST}:3000/rooms`);
   const json = await resp.json();
   rooms = json;
   initRooms(json);
