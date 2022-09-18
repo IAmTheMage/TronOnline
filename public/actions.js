@@ -1,7 +1,7 @@
 const canvas = document.getElementById("game");
 const ctx = canvas.getContext("2d");
-//const HOST = "143.198.117.112";
-const HOST = "localhost";
+const HOST = "143.198.117.112";
+//const HOST = "localhost";
 
 const newRoom = document.getElementById('newRoom')
 const joinRoom = document.getElementById('joinRoom');
