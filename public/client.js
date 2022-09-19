@@ -1,7 +1,7 @@
 const channel = geckos(
   {
     port: 3001,
-    url: HOST != 'localhost' ? HOST : ''
+    url: HOST.toUpperCase() != 'LOCALHOST' ? HOST : ''
   }
 );
 
@@ -32,6 +32,27 @@ let player2Info = {
 let basicMoveSet;
 
 let gameMap = [];
+
+const gameResetState = () => {
+  gameMap = [];
+  gameHasToStart = false;
+  for(let i = 0; i < 40; i++) {
+    gameMap.push([]);
+    for(let j = 0; j < 40; j++) {
+      gameMap[i][j] = {
+        marked: false,
+        markedColor: 'black'
+      }
+    }
+  }
+  realTimer = 0;
+  timer = 4;
+  roomJoined = false;
+  timerResetTime = 1000;
+  roomCreated = false;
+  document.getElementById('canvasContainer').style.display = 'none';
+  ctx.clearRect(0, 0, 400, 400);
+}
 
 for(let i = 0; i < 40; i++) {
   gameMap.push([]);
@@ -80,7 +101,8 @@ channel.onConnect(error => {
   })
 
   channel.on('draw', () => {
-    console.log("Empate");
+    alert("Empate");
+    gameResetState();
     clearInterval(gameMainInterval)
   })
 
@@ -91,6 +113,8 @@ channel.onConnect(error => {
     else {
       console.log("Winner");
     }
+    gameResetState();
+    clearInterval(gameMainInterval)
   })
 
   channel.on('tick', data => {
@@ -100,6 +124,7 @@ channel.onConnect(error => {
         markedColor: dat.markedColor
       }
     })
+
   })
 
   id = channel.id;
@@ -137,18 +162,22 @@ channel.onConnect(error => {
 
 
 document.addEventListener('openRoomsModal', () => {
-  document.querySelectorAll('li').forEach(async (li) => {
-    const resp = await fetch(`http://${HOST}:3000/joinRoom`, {
-      method: 'POST', body: JSON.stringify({
-        id: id,
-        name: li.id
-      }),
-      headers: {
-        'Content-Type': 'application/json'
-      }
+  document.querySelectorAll('li').forEach((li) => {
+    li.addEventListener('click', async () => {
+      const resp = await fetch(`http://${HOST}:3000/joinRoom`, {
+        method: 'POST', body: JSON.stringify({
+          id: id,
+          name: li.id
+        }),
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      })
+      roomJoined = true;
+      document.getElementById('canvasContainer').style.display = 'flex';
+      document.getElementById('joinRoomModal').style.display = 'none';
+      createInterval();
     })
-    roomJoined = true;
-    document.getElementById('canvasContainer').style.display = 'flex';
   })
 })
 
@@ -158,7 +187,10 @@ const draw = () => {
     ctx.clearRect(0, 0, 400, 400);
     fillBackground();
     if(!gameHasToStart)
-    initCanvasState();
+    {
+      console.log("Dont game has to start");
+      initCanvasState();
+    }
     else {
       if(timer > 0) {
         drawTimer();
@@ -206,12 +238,8 @@ const startCounterDraw = () => {
   ctx.fillText(`${timer}`, 176, 200);
 }
 
-let gameMainInterval = window.onload = () => {
-  setInterval(() => {
-    if(realTimer == 20) {
-      realTimer = 0;
-    }
-    if(gameHasToStart) realTimer++;
-    draw();
-  }, 1000 / 20)
+
+
+window.onload = () => {
+  
 }

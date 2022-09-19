@@ -1,7 +1,7 @@
 const canvas = document.getElementById("game");
 const ctx = canvas.getContext("2d");
-const HOST = "143.198.117.112";
-//const HOST = "localhost";
+//const HOST = "143.198.117.112";
+const HOST = "localhost";
 
 const newRoom = document.getElementById('newRoom')
 const joinRoom = document.getElementById('joinRoom');
@@ -17,6 +17,18 @@ newRoom.addEventListener('click', async () => {
 document.getElementById('sendCreateNewRoom').addEventListener('click', () => {
   createNewRoom();
 })
+
+let gameMainInterval;
+
+const createInterval = () => {
+  gameMainInterval = setInterval(() => {
+    if(realTimer == 20) {
+      realTimer = 0;
+    }
+    if(gameHasToStart) realTimer++;
+    draw();
+  }, 1000 / 20)
+}
 
 const initCanvasState = (name) => {
   document.getElementById('canvasContainer').style.display = 'flex';
@@ -42,6 +54,7 @@ const createNewRoom = async () => {
     const cus = new CustomEvent('ChangeMoveset')
     document.dispatchEvent(cus)
     initCanvasState(value);
+    createInterval();
   }
 }
 
@@ -71,3 +84,7 @@ function initRooms(rooms) {
 document.addEventListener('setId', (e) => {
   global_id = e.detail;
 })
+
+const clearUL = () => {
+
+}

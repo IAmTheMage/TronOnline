@@ -34,8 +34,18 @@ app.get('/', (req, res) => {
   res.send("Gustavo");
 })
 
+const filterRooms = () => {
+  const keys = Object.keys(allRooms);
+  let filter = {};
+  keys.forEach(key => {
+    if(!allRooms[key].deleted) filter[key] = allRooms[key];
+  })
+  return filter;
+}
+
 app.get('/rooms', (req, res) => {
-  return res.send(allRooms);
+  const roomsNotDeleted = filterRooms();
+  return res.send(roomsNotDeleted);
 })
 
 const io = geckos();
@@ -84,7 +94,8 @@ app.post('/createRoom', (req, res) => {
 
       },
       active: false,
-      gameMap: gameMap
+      gameMap: gameMap,
+      deleted: false
     }
     allRooms[req.body.name].players[req.body.id] = playerInfo;
     playersToRoom[req.body.id] = req.body.name;
@@ -138,7 +149,7 @@ const updatePos = (room) => {
   })
 }
 
-const setPos = (room) => {
+const setPos = (room, name) => {
   const {players, gameMap} = room;
   const keys = Object.keys(players);
   let losersCount = 0;
@@ -178,14 +189,19 @@ const setPos = (room) => {
   }
   if(losersCount >= 2) {
     playersConnected[room.creatorId].room.emit('draw', {});
+    room.deleted = true;
     room.active = false;
+    return false;
   }
   else if(losersCount == 1) {
     playersConnected[room.creatorId].room.emit('winner', {
       winner: playerLoser
     });
+    room.deleted = true;
     room.active = false;
+    return false;
   }
+  return true;
 }
 
 const checkCollision = (positionX, positionY, directionX, directionY) => {
@@ -199,9 +215,11 @@ setInterval(() => {
   keys.forEach(key => {
     if(allRooms[key].active) {
       updatePos(allRooms[key])
-      setPos(allRooms[key]);
-      playersConnected[allRooms[key].creatorId].room.emit('tick', {modified: allRooms[key].modified});
-      console.log("Tick for room: " + key)
+      const data = setPos(allRooms[key], key);
+      if(data) {
+        playersConnected[allRooms[key].creatorId].room.emit('tick', {modified: allRooms[key].modified});
+        console.log("Tick for room: " + key)
+      }
     }
   })
 }, 1000 / 20);
