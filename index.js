@@ -5,6 +5,7 @@ import geckos, {
 import bodyParser from 'body-parser'
 import http from 'http'
 import cors from 'cors'
+import modifiedModel from './model.js'
 
 const CANVASSIZE = 400;
 
@@ -24,12 +25,12 @@ let playersToRoom = {
 const app = express();
 app.use(cors({origin: '*'}))
 app.use(express.static('public'))
+app.use('./model.js', express.static('/model.js'))
 app.use(bodyParser.json())
 
 const server = http.createServer(app)
 
 app.use(bodyParser.urlencoded({extended: true}))
-
 app.get('/', (req, res) => {
   res.send("Gustavo");
 })
@@ -210,6 +211,8 @@ const checkCollision = (positionX, positionY, directionX, directionY) => {
   return false;
 }
 
+
+
 setInterval(() => {
   const keys = Object.keys(allRooms);
   keys.forEach(key => {
@@ -217,7 +220,14 @@ setInterval(() => {
       updatePos(allRooms[key])
       const data = setPos(allRooms[key], key);
       if(data) {
-        playersConnected[allRooms[key].creatorId].room.emit('tick', {modified: allRooms[key].modified});
+        const buffer = modifiedModel.toBuffer({
+          modified: allRooms[key].modified
+        })
+        console.log("Modified lenght: " + JSON.stringify(allRooms[key].modified).length);
+        console.log("Buffer lenght: " + buffer.byteLength);
+        console.log("Buffer: " + buffer);
+        console.log("Buffer debuffered: " + JSON.stringify(modifiedModel.fromBuffer(buffer)));
+        playersConnected[allRooms[key].creatorId].raw.room.emit(buffer);
         console.log("Tick for room: " + key)
       }
     }

@@ -71,7 +71,7 @@ async function testChannels() {
   await fetch('http://localhost:3000/test');
 }
 
-
+let rawIndex = 0;
 
 channel.onConnect(error => {
 
@@ -108,23 +108,29 @@ channel.onConnect(error => {
 
   channel.on('winner', data => {
     if(data.winner == channel.id) {
-      console.log("Loser");
+      alert("Loser");
     }
     else {
-      console.log("Winner");
+      alert("Winner");
     }
     gameResetState();
     clearInterval(gameMainInterval)
   })
 
-  channel.on('tick', data => {
-    data.modified.forEach(dat => {
-      gameMap[dat.positionX][dat.positionY] = {
-        marked: true,
-        markedColor: dat.markedColor
-      }
-    })
-
+  channel.onRaw(data => {
+    
+    if(rawIndex != 0) {
+      const d = modifiedModel.fromBuffer(data);
+      d.modified.forEach(dat => {
+        gameMap[dat.positionX][dat.positionY] = {
+          marked: true,
+          markedColor: dat.markedColor
+        }
+      })
+    }
+    else {
+      rawIndex++;
+    }
   })
 
   id = channel.id;
