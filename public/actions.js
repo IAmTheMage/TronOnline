@@ -1,7 +1,7 @@
 const canvas = document.getElementById("game");
 const ctx = canvas.getContext("2d");
-const HOST = "143.198.117.112";
-//const HOST = "localhost";
+//const HOST = "143.198.117.112";
+const HOST = "localhost";
 
 const newRoom = document.getElementById('newRoom')
 const joinRoom = document.getElementById('joinRoom');
@@ -22,12 +22,12 @@ let gameMainInterval;
 
 const createInterval = () => {
   gameMainInterval = setInterval(() => {
-    if(realTimer == 20) {
+    if(realTimer == 15) {
       realTimer = 0;
     }
     if(gameHasToStart) realTimer++;
     draw();
-  }, 1000 / 20)
+  }, 1000 / 15)
 }
 
 const initCanvasState = (name) => {

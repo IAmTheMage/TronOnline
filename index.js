@@ -155,16 +155,9 @@ const setPos = (room, name) => {
   const keys = Object.keys(players);
   let losersCount = 0;
   let playerLoser;
-  let player1TestCaseX;
-  let player1TestCaseY;
   let player1Color;
-  let index = 0;
   room.modified = [];
   keys.forEach(key => {
-    player1TestCaseX = players[key].positionX;
-    player1TestCaseY = players[key].positionY;
-    player1Color = players[key].color;
-    index++;
     if(!gameMap[players[key].positionX][players[key].positionY].marked
       && !checkCollision(players[key].positionX, players[key].positionY
         , players[key].moveSetX, players[key].moveSetY)
@@ -185,8 +178,23 @@ const setPos = (room, name) => {
       playerLoser = key;
     }
   })
-  if(gameMap[player1TestCaseX][player1TestCaseY].markedColor != player1Color && gameMap[player1TestCaseX][player1TestCaseY].markedColor != 'black') {
-    losersCount++;
+  if(
+    (players[keys[0]].positionY == players[keys[1]].positionY 
+      && 
+    isOposite(players[keys[0]].moveSetX,players[keys[1]].moveSetX
+    ) && distance(players[keys[0]], players[keys[1]], 'horizontal') <= 1
+    )
+    ||
+    (players[keys[0]].positionX == players[keys[1]].positionX 
+      && 
+    isOposite(players[keys[0]].positionY,players[keys[1]].positionY
+    ) && distance(players[keys[0]], players[keys[1]], 'vertical') <= 1
+    )
+  ) {
+    playersConnected[room.creatorId].room.emit('draw', {});
+    room.deleted = true;
+    room.active = false;
+    return false;
   }
   if(losersCount >= 2) {
     playersConnected[room.creatorId].room.emit('draw', {});
@@ -205,12 +213,24 @@ const setPos = (room, name) => {
   return true;
 }
 
+const distance = (player1, player2, axis) => {
+  if(axis == 'horizontal') {
+    return Math.abs(player1.positionX - player2.positionX);
+  }
+  else {
+    return Math.abs(player1.positionY - player2.positionY);
+  }
+}
+
 const checkCollision = (positionX, positionY, directionX, directionY) => {
   if((positionX + directionX < 0 || positionX  + directionX > 39) || 
   (positionY  + directionY < 0 || positionY  + directionY > 39)) return true;
   return false;
 }
 
+const isOposite = (x1, x2) => {
+  return x1 == x2 * -1 && x1 != 0;
+}
 
 
 setInterval(() => {
@@ -223,20 +243,15 @@ setInterval(() => {
         const buffer = modifiedModel.toBuffer({
           modified: allRooms[key].modified
         })
-        console.log("Modified lenght: " + JSON.stringify(allRooms[key].modified).length);
-        console.log("Buffer lenght: " + buffer.byteLength);
-        console.log("Buffer: " + buffer);
-        console.log("Buffer debuffered: " + JSON.stringify(modifiedModel.fromBuffer(buffer)));
         playersConnected[allRooms[key].creatorId].raw.room.emit(buffer);
         console.log("Tick for room: " + key)
       }
     }
   })
-}, 1000 / 20);
+}, 1000 / 15);
 
 io.addServer(server);
 
 server.listen(3000, () => {
   console.log("App listening on port 3000");
 })
-

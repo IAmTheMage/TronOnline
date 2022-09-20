@@ -118,9 +118,10 @@ channel.onConnect(error => {
   })
 
   channel.onRaw(data => {
-    
+    console.log("ON RAW")
     if(rawIndex != 0) {
       const d = modifiedModel.fromBuffer(data);
+      console.log(d);
       d.modified.forEach(dat => {
         gameMap[dat.positionX][dat.positionY] = {
           marked: true,
@@ -209,9 +210,10 @@ const draw = () => {
 }
 
 const drawTimer = () => {
-  if(realTimer == 20) {
+  if(realTimer == 15) {
     timer--;
   }
+  console.log(timer)
   startCounterDraw();
 }
 
@@ -243,7 +245,6 @@ const startCounterDraw = () => {
   ctx.fillStyle = 'white'
   ctx.fillText(`${timer}`, 176, 200);
 }
-
 
 
 window.onload = () => {
