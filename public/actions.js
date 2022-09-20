@@ -59,6 +59,7 @@ const createNewRoom = async () => {
 }
 
 joinRoom.addEventListener('click', () => {
+  document.getElementById('rooms').innerHTML = '';
   document.getElementById('joinRoomModal').style.display = 'flex';
   getRooms();
 })

@@ -191,20 +191,24 @@ const setPos = (room, name) => {
     ) && distance(players[keys[0]], players[keys[1]], 'vertical') <= 1
     )
   ) {
-    playersConnected[room.creatorId].room.emit('draw', {});
+    playersConnected[room.creatorId].room.emit('draw', {
+      modified: room.modified
+    });
     room.deleted = true;
     room.active = false;
     return false;
   }
   if(losersCount >= 2) {
-    playersConnected[room.creatorId].room.emit('draw', {});
+    playersConnected[room.creatorId].room.emit('draw', {
+      modified: room.modified
+    });
     room.deleted = true;
     room.active = false;
     return false;
   }
   else if(losersCount == 1) {
     playersConnected[room.creatorId].room.emit('winner', {
-      winner: playerLoser
+      winner: playerLoser, modified: room.modified
     });
     room.deleted = true;
     room.active = false;

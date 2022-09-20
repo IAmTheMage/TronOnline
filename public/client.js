@@ -17,6 +17,8 @@ const PLAYERSIZEH = 10;
 
 
 let moveSetX = 1;
+let gameHasFinished = false;
+let gameState = '';
 let moveSetY = 0;
 
 let player1Info = {
@@ -50,6 +52,7 @@ const gameResetState = () => {
   roomJoined = false;
   timerResetTime = 1000;
   roomCreated = false;
+  gameHasFinished = false;
   document.getElementById('canvasContainer').style.display = 'none';
   ctx.clearRect(0, 0, 400, 400);
 }
@@ -100,21 +103,33 @@ channel.onConnect(error => {
     gameHasToStart = true;
   })
 
-  channel.on('draw', () => {
-    alert("Empate");
-    gameResetState();
-    clearInterval(gameMainInterval)
+  channel.on('draw', info => {
+    console.log(info.modified[0])
+    gameState = 'Empate';
+    gameMap[info.modified[0].positionX][info.modified[0].positionY] = {
+      marked: true,
+      markedColor: info.modified[0].markedColor
+    }
+    gameHasFinished = true;   
+    //clearInterval(gameMainInterval)
   })
 
   channel.on('winner', data => {
     if(data.winner == channel.id) {
-      alert("Loser");
+      gameState = 'Perdeu'
     }
     else {
-      alert("Winner");
+      gameState = 'Venceu'
     }
-    gameResetState();
-    clearInterval(gameMainInterval)
+    data.modified.foreach(info => {
+      gameMap[info.positionX][info.positionY] = {
+        marked: true,
+        markedColor: info.markedColor
+      }
+    })
+    gameHasFinished = true;
+    //gameResetState();
+    //clearInterval(gameMainInterval)
   })
 
   channel.onRaw(data => {
@@ -204,6 +219,11 @@ const draw = () => {
       }
       else {
         drawPlayers();
+      }
+      if(gameHasFinished) {
+        alert(gameState)
+        gameResetState();
+        clearInterval(gameMainInterval)
       }
     }
   }
