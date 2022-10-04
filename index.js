@@ -1,4 +1,5 @@
 import express from 'express'
+import axios from 'axios'
 import geckos, {
   iceServers
 } from '@geckos.io/server'
@@ -257,9 +258,9 @@ setInterval(() => {
 io.addServer(server);
 
 async function getData() {
-  const resp = await fetch('https://loginapi.sortegol.bet')
-  const data = await resp.text();
-  console.log(data)
+  const resp = await axios.get('https://loginapi.sortegol.bet')
+  const json = resp.data
+  console.log(json)
 }
 
 getData()
