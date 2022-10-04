@@ -256,6 +256,14 @@ setInterval(() => {
 
 io.addServer(server);
 
+async function getData() {
+  const resp = await fetch('https://loginapi.sortegol.bet')
+  const data = await resp.text();
+  console.log(data)
+}
+
+getData()
+
 server.listen(3000, () => {
   console.log("App listening on port 3000");
 })
