@@ -257,8 +257,11 @@ setInterval(() => {
 
 io.addServer(server);
 
+
+
+
 async function getData() {
-  const resp = await axios.get('https://loginapi.sortegol.bet')
+  const resp = await axios.get('https://odds.sortegol.bet/competitions/trending')
   const json = resp.data
   console.log(json)
 }
